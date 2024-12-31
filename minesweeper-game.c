@@ -138,21 +138,21 @@ void Field_print(struct Field *field)
     }
 }
 
-enum Plyaer_Move_Action
+enum Player_Move_Action
 {
-    Plyaer_Move_Action_FLAG,
-    Plyaer_Move_Action_OPEN,
+    Player_Move_Action_FLAG,
+    Player_Move_Action_OPEN,
 };
 
 struct Player_Move
 {
     int x, y;
-    enum Plyaer_Move_Action action;
+    enum Player_Move_Action action;
 };
 
 struct Player_Move Player_process(void)
 {
-    enum Plyaer_Move_Action action;
+    enum Player_Move_Action action;
     int x = 0, y = 0, ch;
 
     while ((ch = getchar()) >= 0 && ch != '#' && ch != '?');
@@ -302,11 +302,11 @@ int main(int argc, char **argv)
 
         switch (move.action)
         {
-        case Plyaer_Move_Action_OPEN:
+        case Player_Move_Action_OPEN:
         {
             Field_open(&field, move.x, move.y);
         } break;
-        case Plyaer_Move_Action_FLAG:
+        case Player_Move_Action_FLAG:
         {
             if (field.field[move.x + move.y * field.width].status == Field_Cell_Status_HIDDEN)
                 field.field[move.x + move.y * field.width].status = Field_Cell_Status_FLAGGED;
