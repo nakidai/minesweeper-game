@@ -18,11 +18,19 @@
 #define srandom srandom_deterministic
 #endif
 
-#define USAGE_SMALL "usage: %s [-h] [-s seed] [-m mines] [width height]\n"
+#define USAGE_SMALL \
+    "usage: %s [-" \
+    "h" \
+    "x" \
+    "]" \
+    " [-s seed]" \
+    " [-m mines]" \
+    " [width height]" \
+    "\n"
 #define USAGE_DESCRIPTION \
     "  -h            show this help menu\n" \
     "  -s seed       set user-defined seed for mines generation\n" \
-    "  -m mines      amount of mines to place, default is width*height/10" \
+    "  -m mines      amount of mines to place, default is width*height/10\n" \
     "  width height  size of field, default is 10 by 10\n" \
 
 void usage(const char *name, int full)
@@ -40,9 +48,12 @@ void usage(const char *name, int full)
 #undef USAGE_SMALL
 #undef USAGE_DESCRIPTION
 
-#define Field_Cell_Status_HIDDEN 0
-#define Field_Cell_Status_OPENED 1
-#define Field_Cell_Status_FLAGGED 2
+enum Field_Cell_Status
+{
+    Field_Cell_Status_HIDDEN,
+    Field_Cell_Status_OPENED,
+    Field_Cell_Status_FLAGGED,
+};
 
 struct Field_Cell
 {
