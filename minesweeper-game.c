@@ -108,6 +108,19 @@ void Field_open(struct Field *field, unsigned x, unsigned y)
                 Field_open(field, x + i, y + j);
 }
 
+int Field_isWin(struct Field *field)
+{
+    int closed = 0, mines = 0;
+    for (unsigned i = 0; i < field->width * field->height; ++i)
+    {
+        if (field->field[i].is_mine && field->field[i].status == Field_Cell_Status_OPENED)
+            return -1;
+        closed += field->field[i].status != Field_Cell_Status_OPENED;
+        mines += field->field[i].is_mine;
+    }
+    return closed == mines;
+}
+
 void Field_print(struct Field *field)
 {
     for (unsigned y = 0; y < field->width; ++y)
@@ -281,6 +294,11 @@ int main(int argc, char **argv)
     for (;;)
     {
         Field_print(&field);
+        int win = Field_isWin(&field);
+        if (win > 0)
+            printf("You won!\n");
+        else if (win < 0)
+            printf("You lost :<\n");
         struct Player_Move move = Player_process();
         if (move.x < 0)
         {
