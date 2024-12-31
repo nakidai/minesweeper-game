@@ -1,0 +1,99 @@
+.Dd December 31, 2024
+.Dt MINESWEEPER-GAME 6
+.Os
+.
+.Sh NAME
+.Nm minesweeper-game
+.Nd just simple minesweeper
+.
+.Sh SYNOPSIS
+.Nm
+.Op Fl h
+.Op Fl s Ar seed
+.Op Fl m Ar mines
+.Op Ar width height
+.
+.Sh DESCRIPTION
+.Nm
+is a simple game
+so you can
+waste your time
+with ease.
+.
+.Pp
+These are options
+you can pass to
+.Nm :
+.Bl -tag -width Ds
+.It Fl h
+Show help message
+.It Fl s Ar seed
+Make
+.Nm
+use
+.Ar seed
+in
+.Xr random 3 .
+Default is
+current time in seconds
+since the Epoch.
+.It Fl m Ar mines
+Amount of mines
+to place on the field.
+Default is
+.Ar width
+*
+.Ar height
+/
+10.
+.It Ar width height
+Size
+of the field.
+Can be passed
+only if together.
+Default field's size is
+10 by 10.
+.El
+.
+.Pp
+To play the
+.Nm
+you should enter commands
+in specific format:
+.Ic ('#'|'?')'X'x'Y'; .
+.
+.Pp
+Describing the command,
+the first char if command is
+the action
+that is either
+.Ic # (
+open cell)
+or
+.Ic ? (
+flag cell).
+Then comes
+the coordinates
+in format
+.Ic XxY ,
+where
+.Ic X
+and
+.Ic Y
+are coordinates,
+starting with 1.
+Each command ends with
+the semicolon.
+.
+.Sh EXIT STATUS
+.Nm
+returns
+an
+.Xr 3 errno .
+.
+.Sh BUGS
+If you'll meet
+any bugs,
+you can
+tell me about them
+.Lk https://github.com/nakidai/minesweeper-game/issues/new here .
