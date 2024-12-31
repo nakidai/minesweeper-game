@@ -19,4 +19,4 @@ uninstall:
 	${RM} ${DESTDIR}/share/man/man6/minesweeper-game.6
 
 clean:
-	rm -f ms tags
+	rm -f minesweeper-game tags
