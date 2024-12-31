@@ -115,34 +115,24 @@ void Field_print(struct Field *field)
         for (unsigned x = 0; x < field->height; ++x)
         {
             struct Field_Cell c = field->field[x + y * field->width];
-//#if 0
             switch (c.status)
             {
             case Field_Cell_Status_HIDDEN:
             {
-                printf(" #");
+                printf("[]");
             } break;
             case Field_Cell_Status_FLAGGED:
             {
-                printf(" F");
+                printf("??");
             } break;
             case Field_Cell_Status_OPENED:
             {
                 if (c.is_mine)
-                    printf(" B");
+                    printf("##");
                 else
                     printf(" %d", c.mines_near);
             } break;
             }
-//#endif
-#if 0
-            printf(
-                x == 0
-                ? "(%d %d %d)"
-                : " (%d %d %d)",
-                c.status, c.is_mine, c.mines_near
-            );
-#endif
         }
         putchar('\n');
     }
