@@ -115,8 +115,7 @@ void Field_open(struct Field *field, unsigned x, unsigned y)
 
     for (int j = -1; j <= 1; ++j)
         for (int i = -1; i <= 1; ++i)
-            if (!(i && j || !i && !j))
-                Field_open(field, x + i, y + j);
+            Field_open(field, x + i, y + j);
 }
 
 int Field_isWin(struct Field *field)
@@ -310,6 +309,7 @@ int main(int argc, char **argv)
             printf("You won!\n");
         else if (win < 0)
             printf("You lost :<\n");
+
         struct Player_Move move = Player_process();
         if (move.x < 0)
         {
