@@ -300,7 +300,7 @@ int main(int argc, char **argv)
         Field_print(&field);
         int win = Field_isWin(&field);
         if (win > 0)
-            printf("You won! OwO\n");
+            printf("You won! UwU\n");
         else if (win < 0)
             printf("You lost :<\n");
 
