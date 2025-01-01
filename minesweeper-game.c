@@ -16,7 +16,6 @@
 #define USAGE_SMALL \
     "usage: %s [-" \
     "h" \
-    "x" \
     "]" \
     " [-s seed]" \
     " [-m mines]" \
