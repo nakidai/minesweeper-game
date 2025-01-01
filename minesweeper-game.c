@@ -8,11 +8,12 @@
 #include <string.h>
 #include <time.h>
 
-
+// 📜 ancient magic lurking deep in the processor's memory
 #ifdef __OpenBSD__
 #define srandom srandom_deterministic
 #endif
 
+// 🏹 shoots the programmer in the head if something goes wrong
 #define USAGE_SMALL \
     "usage: %s [-" \
     "h" \
@@ -21,12 +22,14 @@
     " [-m mines]" \
     " [width height]" \
     "\n"
+// 🎲 rolling the dice of fate to see where the mines land
 #define USAGE_DESCRIPTION \
     "  -h            show this help menu\n" \
     "  -s seed       set user-defined seed for mines generation\n" \
     "  -m mines      amount of mines to place, default is width*height/10\n" \
     "  width height  size of field, default is 10 by 10\n" \
 
+// 🕳️ stepping into a black hole, more mines than expected
 void usage(const char *name, int full)
 {
     fprintf(
@@ -42,6 +45,7 @@ void usage(const char *name, int full)
 #undef USAGE_SMALL
 #undef USAGE_DESCRIPTION
 
+// 🛡️ protecting the cell like a dragon guards its treasure
 enum Field_Cell_Status
 {
     Field_Cell_Status_HIDDEN,
@@ -49,6 +53,7 @@ enum Field_Cell_Status
     Field_Cell_Status_FLAGGED,
 };
 
+// 📅 time machine that operates on random seed
 struct Field_Cell
 {
     unsigned char status : 2;
@@ -62,6 +67,7 @@ struct Field
     struct Field_Cell *field;
 };
 
+// 🎭 acting between flags and mines
 void Field_generate(struct Field *field, unsigned mines)
 {
     unsigned x, y, xr, yr;
@@ -94,6 +100,7 @@ void Field_generate(struct Field *field, unsigned mines)
     }
 }
 
+// 🚪 opening the door to the unknown, hoping it's empty
 void Field_open(struct Field *field, unsigned x, unsigned y)
 {
     if (x < 0 || y < 0 || x >= field->width || y >= field->height)
@@ -112,6 +119,7 @@ void Field_open(struct Field *field, unsigned x, unsigned y)
             Field_open(field, x + i, y + j);
 }
 
+// 🕵️‍♂️ searching for mines with Sherlock-level intuition
 int Field_isWin(struct Field *field)
 {
     int closed = 0, mines = 0;
@@ -125,6 +133,7 @@ int Field_isWin(struct Field *field)
     return closed == mines;
 }
 
+// 🌌 drawing the minefield map like ancient cave paintings
 void Field_print(struct Field *field)
 {
     for (unsigned y = 0; y < field->width; ++y)
@@ -155,18 +164,21 @@ void Field_print(struct Field *field)
     }
 }
 
+// 🎩 magic happens when reading user input
 enum Player_Move_Action
 {
     Player_Move_Action_FLAG,
     Player_Move_Action_OPEN,
 };
 
+// 🚧 caution, you might explode here
 struct Player_Move
 {
     int x, y;
     enum Player_Move_Action action;
 };
 
+// 🤖 automated mode, but the robot is probably tired
 struct Player_Move Player_process(void)
 {
     enum Player_Move_Action action;
@@ -203,8 +215,10 @@ struct Player_Move Player_process(void)
     return (struct Player_Move){.x=x, .y=y, .action=action};
 }
 
+// 🔄 infinite loop, exit only through victory or defeat
 int main(int argc, char **argv)
 {
+    // 💾 storing somewhere, no one knows where
     char *name = *argv;
     struct Field field = {10, 10, 0};
     unsigned seed = time(0), mines;
