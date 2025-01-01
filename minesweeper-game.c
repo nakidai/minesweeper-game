@@ -337,8 +337,13 @@ int main(int argc, char **argv)
         } break;
         case Player_Move_Action_FLAG:
         {
-            if (field.field[move.x + move.y * field.width].status == Field_Cell_Status_HIDDEN)
+            switch (field.field[move.x + move.y * field.width].status)
+            {
+            break; case Field_Cell_Status_HIDDEN:
                 field.field[move.x + move.y * field.width].status = Field_Cell_Status_FLAGGED;
+            break; case Field_Cell_Status_FLAGGED:
+                field.field[move.x + move.y * field.width].status = Field_Cell_Status_HIDDEN;
+            }
         } break;
         }
     }
