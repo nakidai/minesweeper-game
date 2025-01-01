@@ -1,8 +1,3 @@
-/*
- * Minesweeper.
- */
-
-
 #include <ctype.h>
 #include <err.h>
 #include <errno.h>
