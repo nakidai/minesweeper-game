@@ -1,7 +1,5 @@
 #include <ctype.h>
-#include <err.h>
 #include <errno.h>
-#include <getopt.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +7,10 @@
 #include <strings.h>
 #include <time.h>
 
+#include <err.h>
+#include <getopt.h>
 #include <unistd.h>
+
 
 #ifdef __OpenBSD__
 #define srandom srandom_deterministic
