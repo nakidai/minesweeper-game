@@ -27,14 +27,14 @@
     "  -m mines      amount of mines to place, default is width*height/10\n" \
     "  width height  size of field, default is 10 by 10\n" \
 
-void usage(const char *name, int full)
+void usage(int full)
 {
     fprintf(
         full ? stdout : stderr,
         full
             ? USAGE_SMALL USAGE_DESCRIPTION
             : USAGE_SMALL,
-       name
+       getprogname()
     );
     exit(!full);
 }
@@ -256,7 +256,6 @@ eof:
 
 int main(int argc, char **argv)
 {
-    char *name = *argv;
     struct Field field = {10, 10, 0};
     int selected_x, selected_y;
     unsigned seed = time(0), mines;
@@ -274,7 +273,7 @@ int main(int argc, char **argv)
             if (e)
             {
                 warnx("%s is %s: %s", "seed", e, optarg);
-                usage(name, 0);
+                usage(0);
             }
         } break;
         case 'm':
@@ -286,16 +285,16 @@ int main(int argc, char **argv)
             if (e)
             {
                 warnx("%s is %s: %s", "mines", e, optarg);
-                usage(name, 0);
+                usage(0);
             }
         } break;
         case 'h':
         {
-            usage(name, 1);
+            usage(1);
         } break;
         default:
         {
-            usage(name, 0);
+            usage(0);
         } break;
         }
     }
@@ -318,14 +317,14 @@ int main(int argc, char **argv)
             if (e)
             {
                 warnx("%s is %s: %s", names[i], e, argv[i]);
-                usage(name, 0);
+                usage(0);
             }
         }
     } break;
     default:
     {
         warnx("you should pass exactly 2 positional arguments");
-        usage(name, 0);
+        usage(0);
     } break;
     }
 
@@ -336,7 +335,7 @@ int main(int argc, char **argv)
     else if (mines > field.width * field.height)
     {
         warnx("%s is %s: %u", "mines", "too large", mines);
-        usage(name, 0);
+        usage(0);
     }
 
     srandom(seed);
