@@ -6,7 +6,7 @@ all: minesweeper-game
 README: README.7
 	mandoc -T ascii $< | col -b > $@
 
-tags:
+tags: minesweeper-game.c
 	ctags minesweeper-game.c
 
 install:
