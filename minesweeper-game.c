@@ -9,6 +9,8 @@
 #include <strings.h>
 #include <time.h>
 
+#include <unistd.h>
+
 #ifdef __OpenBSD__
 #define srandom srandom_deterministic
 #endif
@@ -260,6 +262,10 @@ int main(int argc, char **argv)
     int selected_x, selected_y;
     unsigned seed = time(0), mines;
     int is_mines_set = 0, ch;
+
+#ifdef __OpenBSD__
+    pledge("stdio", NULL);
+#endif
 
     while ((ch = getopt(argc, argv, "hm:s:")) > 0)
     {

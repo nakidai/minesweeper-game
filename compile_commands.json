@@ -1,0 +1,17 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/cc",
+      "-c",
+      "-isystem",
+      "/usr/include/bsd",
+      "-DLIBBSD_OVERLAY",
+      "-o",
+      "minesweeper-game",
+      "minesweeper-game.c"
+    ],
+    "directory": "/home/naki/programming/thec/ms/src",
+    "file": "/home/naki/programming/thec/ms/src/minesweeper-game.c",
+    "output": "/home/naki/programming/thec/ms/src/minesweeper-game"
+  }
+]
