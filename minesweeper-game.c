@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <time.h>
-
 
 #ifdef __OpenBSD__
 #define srandom srandom_deterministic
@@ -53,6 +53,7 @@ struct Field_Cell
 {
     unsigned char status : 2;
     unsigned char is_mine : 1;
+    unsigned char is_selected : 1;
     unsigned char mines_near : 4;
 };
 
@@ -136,18 +137,18 @@ void Field_print(struct Field *field)
             {
             case Field_Cell_Status_HIDDEN:
             {
-                printf("[]");
+                printf(c.is_selected ? "X]" : "[]");
             } break;
             case Field_Cell_Status_FLAGGED:
             {
-                printf("??");
+                printf(c.is_selected ? "X?" : "??");
             } break;
             case Field_Cell_Status_OPENED:
             {
                 if (c.is_mine)
-                    printf("##");
+                    printf(c.is_selected ? "X#" : "##");
                 else
-                    printf(" %d", c.mines_near);
+                    printf(c.is_selected ? "X%d" : " %d", c.mines_near);
             } break;
             }
         }
@@ -155,10 +156,27 @@ void Field_print(struct Field *field)
     }
 }
 
+const char *const Player_Move_Action_CHARS =
+    "@"
+    "!"
+    "j"
+    "?"
+    "h"
+    "#"
+    "l"
+    "k"
+;
+
 enum Player_Move_Action
 {
+    Player_Move_Action_CLICK_OPEN,
+    Player_Move_Action_CLICK_FLAG,
+    Player_Move_Action_DOWN,
     Player_Move_Action_FLAG,
+    Player_Move_Action_LEFT,
     Player_Move_Action_OPEN,
+    Player_Move_Action_RIGHT,
+    Player_Move_Action_UP,
 };
 
 struct Player_Move
@@ -171,30 +189,63 @@ struct Player_Move Player_process(void)
 {
     enum Player_Move_Action action;
     int x = 0, y = 0, ch;
+    char *actionp;
 
-    while ((ch = getchar()) >= 0 && ch != '#' && ch != '?');
-    action = ch == '#';
+    while ((ch = getchar()) >= 0 && !(actionp = strchr(Player_Move_Action_CHARS, ch)));
+    if (ch < 0)
+        goto eof;
+    action = actionp - Player_Move_Action_CHARS;
 
-    while ((ch = getchar()) >= 0 && ch != 'x')
+    switch (action)
+    case Player_Move_Action_FLAG:
+    case Player_Move_Action_OPEN:
     {
-        if (!isdigit(ch))
-            continue;
-        x *= 10;
-        x += ch - '0';
-    }
-    x -= 1;
+        {
+        while ((ch = getchar()) >= 0 && ch != 'x')
+        {
+            if (!isdigit(ch))
+                continue;
+            x *= 10;
+            x += ch - '0';
+        }
+        x -= 1;
 
-    while ((ch = getchar()) >= 0 && ch != ';')
+        while ((ch = getchar()) >= 0 && ch != ';')
+        {
+            if (!isdigit(ch))
+                continue;
+            y *= 10;
+            y += ch - '0';
+        }
+        y -= 1;
+    } break;
+    case Player_Move_Action_UP:
+    case Player_Move_Action_DOWN:
     {
-        if (!isdigit(ch))
-            continue;
-        y *= 10;
-        y += ch - '0';
+        while ((ch = getchar()) >= 0 && ch != ';')
+        {
+            if (!isdigit(ch))
+                continue;
+            y *= 10;
+            y += ch - '0';
+        }
+    } break;
+    case Player_Move_Action_LEFT:
+    case Player_Move_Action_RIGHT:
+    {
+        while ((ch = getchar()) >= 0 && ch != ';')
+        {
+            if (!isdigit(ch))
+                continue;
+            x *= 10;
+            x += ch - '0';
+        }
+    } break;
     }
-    y -= 1;
 
     if (ch < 0)
     {
+eof:
         if (errno)
             warn("cannot read input");
         exit(errno);
@@ -207,6 +258,7 @@ int main(int argc, char **argv)
 {
     char *name = *argv;
     struct Field field = {10, 10, 0};
+    int selected_x, selected_y;
     unsigned seed = time(0), mines;
     int is_mines_set = 0, ch;
 
@@ -293,6 +345,8 @@ int main(int argc, char **argv)
     field.field = field_buffer;
 
     memset(field.field, 0, field.width * field.height);
+    selected_x = selected_y = 0;
+    field.field[0].is_selected = 1;
     Field_generate(&field, mines);
 
     for (;;)
@@ -303,24 +357,52 @@ int main(int argc, char **argv)
             printf("You won! UwU\n");
         else if (win < 0)
             printf("You lost :<\n");
+        else
+            printf("Your current location is (%d, %d)\n", selected_x + 1, selected_y + 1);
 
         struct Player_Move move = Player_process();
-        if (move.x < 0)
+        switch (move.action)
         {
-            warnx("%s is %s: %d", "x", "too small", move.x + 1);
-            continue;
-        } else if (move.y < 0)
+        case Player_Move_Action_OPEN:
+        case Player_Move_Action_FLAG:
         {
-            warnx("%s is %s: %d", "y", "too small", move.y + 1);
-            continue;
-        } else if (move.x >= field.width)
+            if (move.x < 0)
+            {
+                warnx("%s is %s: %d", "x", "too small", move.x + 1);
+                continue;
+            } else if (move.y < 0)
+            {
+                warnx("%s is %s: %d", "y", "too small", move.y + 1);
+                continue;
+            } else if (move.x >= field.width)
+            {
+                warnx("%s is %s: %d", "x", "too large", move.x + 1);
+                continue;
+            } else if (move.y >= field.height)
+            {
+                warnx("%s is %s: %d", "y", "too large", move.y + 1);
+                continue;
+            }
+        } break;
+        case Player_Move_Action_UP:
+        case Player_Move_Action_DOWN:
+        case Player_Move_Action_LEFT:
+        case Player_Move_Action_RIGHT:
         {
-            warnx("%s is %s: %d", "x", "too large", move.x + 1);
-            continue;
-        } else if (move.y >= field.height)
+            field.field[selected_x + selected_y * field.width].is_selected = 0;
+        } break;
+        case Player_Move_Action_CLICK_OPEN:
         {
-            warnx("%s is %s: %d", "y", "too large", move.y + 1);
-            continue;
+            move.x = selected_x;
+            move.y = selected_y;
+            move.action = Player_Move_Action_OPEN;
+        } break;
+        case Player_Move_Action_CLICK_FLAG:
+        {
+            move.x = selected_x;
+            move.y = selected_y;
+            move.action = Player_Move_Action_FLAG;
+        } break;
         }
 
         switch (move.action)
@@ -339,6 +421,43 @@ int main(int argc, char **argv)
                 field.field[move.x + move.y * field.width].status = Field_Cell_Status_HIDDEN;
             }
         } break;
+        case Player_Move_Action_UP:
+        {
+            if (selected_y - move.y < 0)
+                warnx("invalid location");
+            else
+                selected_y -= move.y;
+        } break;
+        case Player_Move_Action_DOWN:
+        {
+            if (selected_y + move.y >= field.height)
+                warnx("invalid location");
+            else
+                selected_y += move.y;
+        } break;
+        case Player_Move_Action_LEFT:
+        {
+            if (selected_x - move.x < 0)
+                warnx("invalid location");
+            else
+                selected_x -= move.x;
+        } break;
+        case Player_Move_Action_RIGHT:
+        {
+            if (selected_x + move.x >= field.width)
+                warnx("invalid location");
+            else
+                selected_x += move.x;
+        } break;
+        }
+
+        switch (move.action)
+        {
+        case Player_Move_Action_UP:
+        case Player_Move_Action_DOWN:
+        case Player_Move_Action_LEFT:
+        case Player_Move_Action_RIGHT:
+            field.field[selected_x + selected_y * field.width].is_selected = 1;
         }
     }
 }

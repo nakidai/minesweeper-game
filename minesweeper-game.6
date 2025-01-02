@@ -55,35 +55,35 @@ Default field's size is
 10 by 10.
 .El
 .
+.Ss Commands
 .Pp
 To play the
 .Nm
 you should enter commands
-in specific format:
-.Ic (#|?)XxY; .
+in specific format.
 .
 .Pp
-Describing the command,
-the first char if command is
-the action
-that is either
-.Ic #
-(open cell)
-or
-.Ic ?
-(flag cell).
-Then comes
-the coordinates
-in format
-.Ic XxY ,
-where
-.Ic X
-and
-.Ic Y
-are coordinates,
-starting with 1.
-Each command ends with
-the semicolon.
+All types of commands
+are listed below:
+.Bl -tag -width Ds
+.It Ic #XxY;
+Open cell at
+.Cm ( X ,
+.Cm Y )
+.It Ic ?XxY;
+Mark cell at
+.Cm ( X ,
+.Cm Y )
+.It Ic hN; jN; kN; lN;
+Move
+left, down, up or right respectively
+by
+.Cm N
+.It Ic @
+Open selected cell
+.It Ic !
+Mark selected cell
+.El
 .
 .Sh EXIT STATUS
 .Nm
@@ -96,35 +96,35 @@ Your session may look
 like this one:
 .Bd -literal -offset indent
 $ minesweeper-game -m1 3 3
-[][][]
+X][][]
 [][][]
 [][][]
 #1x1;
- 1[][]
+X][][]
 [][][]
 [][][]
 #3x3;
- 1[][]
+X1[][]
 [][][]
 [][] 1
 #1x2;
- 1[][]
+X1[][]
  1[][]
 [][] 1
 #1x3;#2x1;#3x1;#2x3;#3x2;
- 1[][]
- 1[][]
- 1[] 1
- 1 1[]
+X1[][]
  1[][]
  1[] 1
- 1 1 1
+X1 1[]
  1[][]
  1[] 1
- 1 1 1
+X1 1 1
+ 1[][]
+ 1[] 1
+X1 1 1
  1[][]
  1 1 1
- 1 1 1
+X1 1 1
  1[] 1
  1 1 1
 You won!
