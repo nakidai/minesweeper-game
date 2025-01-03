@@ -131,9 +131,9 @@ int Field_isWin(struct Field *field)
 
 void Field_print(struct Field *field)
 {
-    for (unsigned y = 0; y < field->width; ++y)
+    for (unsigned y = 0; y < field->height; ++y)
     {
-        for (unsigned x = 0; x < field->height; ++x)
+        for (unsigned x = 0; x < field->width; ++x)
         {
             struct Field_Cell c = field->field[x + y * field->width];
             switch (c.status)
