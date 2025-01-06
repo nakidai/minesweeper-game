@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <time.h>
 
 #include <err.h>
 #include <getopt.h>
@@ -261,8 +260,8 @@ int main(int argc, char **argv)
 {
     struct Field field = {10, 10, 0};
     int selected_x, selected_y;
-    unsigned seed = time(0), mines;
-    int is_mines_set = 0, ch;
+    unsigned seed, mines;
+    int is_mines_set = 0, is_seed_set = 0, ch;
 
 #ifdef __OpenBSD__
     pledge("stdio", NULL);
@@ -276,6 +275,7 @@ int main(int argc, char **argv)
         {
             const char *e;
 
+            is_seed_set = 1;
             seed = strtonum(optarg, 0, UINT_MAX, &e);
             if (e)
             {
@@ -334,6 +334,10 @@ int main(int argc, char **argv)
         usage(0);
     } break;
     }
+
+    if (!is_seed_set)
+        if (getentropy(&seed, sizeof(seed)) < 0)
+            err(1, "getentropy()");
 
     if (!is_mines_set)
     {
