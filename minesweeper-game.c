@@ -18,6 +18,7 @@
 #define USAGE_SMALL \
     "usage: %s [-" \
     "h" \
+    "S" \
     "]" \
     " [-s seed]" \
     " [-m mines]" \
@@ -25,6 +26,7 @@
     "\n"
 #define USAGE_DESCRIPTION \
     "  -h            show this help menu\n" \
+    "  -S            show used seed\n" \
     "  -s seed       set user-defined seed for mines generation\n" \
     "  -m mines      amount of mines to place, default is width*height/10\n" \
     "  width height  size of field, default is 10 by 10\n" \
@@ -262,12 +264,13 @@ int main(int argc, char **argv)
     int selected_x, selected_y;
     unsigned seed, mines;
     int is_mines_set = 0, is_seed_set = 0, ch;
+    int show_seed = 0;
 
 #ifdef __OpenBSD__
     pledge("stdio", NULL);
 #endif
 
-    while ((ch = getopt(argc, argv, "hm:s:")) > 0)
+    while ((ch = getopt(argc, argv, "hSm:s:")) > 0)
     {
         switch (ch)
         {
@@ -294,6 +297,10 @@ int main(int argc, char **argv)
                 warnx("%s is %s: %s", "mines", e, optarg);
                 usage(0);
             }
+        } break;
+        case 'S':
+        {
+            show_seed = 1;
         } break;
         case 'h':
         {
@@ -349,6 +356,8 @@ int main(int argc, char **argv)
         usage(0);
     }
 
+    if (show_seed)
+        warnx("seed is %u", seed);
     srandom(seed);
 
     struct Field_Cell field_buffer[field.width * field.height];
