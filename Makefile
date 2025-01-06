@@ -1,5 +1,8 @@
-CFLAGS += `pkg-config libbsd-overlay --cflags`
-LDLIBS += `pkg-config libbsd-overlay --libs`
+CFLAGS.bsd != pkg-config libbsd-overlay --cflags
+CFLAGS += ${CFLAGS.bsd}
+
+LDLIBS.bsd != pkg-config libbsd-overlay --libs
+LDLIBS += ${LDLIBS.bsd}
 
 all: minesweeper-game
 
