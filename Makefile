@@ -1,3 +1,5 @@
+DESTDIR ?= /usr/local
+
 CFLAGS.bsd != pkg-config libbsd-overlay --cflags
 CFLAGS += ${CFLAGS.bsd}
 
